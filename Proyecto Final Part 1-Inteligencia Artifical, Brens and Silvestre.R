@@ -52,6 +52,7 @@ summary(logitmod)
 anova(logitmod)
 
 # fit neural network
+library(neuralnet)
 nn=neuralnet(logitmod, data=bc, hidden=3, act.fct = "logistic",
              linear.output = FALSE)
 nn
