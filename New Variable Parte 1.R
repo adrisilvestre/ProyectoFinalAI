@@ -46,7 +46,7 @@ table(testData$Class)
 
 
 # Build Logistic Model using training data
-logitmod <- glm(Class ~ Cl.thickness + Cell.size + Cell.shape, family = "binomial", trainData)
+logitmod <- glm(Class ~ Cl.thickness + Cell.size + Cell.shape + Marg.adhesion , family = "binomial", trainData)
 
 summary(logitmod)
 anova(logitmod)

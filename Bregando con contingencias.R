@@ -46,25 +46,32 @@ table(testData$Class)
 
 
 # Build Logistic Model using training data
-logitmod <- glm(Class ~ Cl.thickness + Cell.size + Cell.shape, family = "binomial", trainData)
+#logitmod <- glm(Class ~ Cl.thickness + Cell.size + Cell.shape + Marg.adhesion , family = "binomial", trainData)
 
-summary(logitmod)
-anova(logitmod)
+#summary(logitmod)
+#anova(logitmod)
 
 # fit neural network
 library(neuralnet)
-nn=neuralnet(logitmod, data=bc, hidden=3, act.fct = "logistic",
+nn=neuralnet(Class ~ Cl.thickness + Cell.size + Cell.shape, data=bc, hidden=3, act.fct = "logistic",
              linear.output = FALSE)
 nn
 
 # plot neural network
 plot(nn)
-
 # predict using test data
 
-pred <- predict(logitmod, newdata = testData, type = "response")
+pred <- compute(nn,testData)
 head(pred)
+pred$net.result
 
+prob <- pred$net.result
+pred <- ifelse(prob>0.5, 1, 0)
+y_act <- testData$Class
+pred
+y_pred <- factor(pred, levels=c(0, 1))
+
+table(y_act, y_pred)
 # Recode factors using 50% as probabilistic threshold
 y_pred_num <- ifelse(pred > 0.5, 1, 0)
 y_pred <- factor(y_pred_num, levels=c(0, 1))
@@ -72,6 +79,8 @@ y_act <- testData$Class
 class(y_pred)
 head(y_pred)
 head(y_act)
+
+
 
 # Accuracy and contigency analysis
 table(y_act, y_pred)
